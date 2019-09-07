@@ -129,7 +129,7 @@
 		//由于table加载延时，setItem无效，重新读取一次数据
 		$(function () {
 			var param=JSON.parse(localStorage.getItem('listparam'));
-			if(param==null||param.curpage!='list'){
+			if(param==null||param.curpage=='add'){
 				$('#searchbill').click();
 			}else{
 				var type=$("[name='type']").val(param.type);
