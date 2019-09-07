@@ -1,0 +1,149 @@
+.layui-layout-admin .layui-body {
+	top: 0px;
+	left: 0px;
+	bottom: 120px;
+}
+.layui-layout-admin .layui-footer {
+    height: 120px;
+    left: 0px;
+    line-height: 120px;
+}
+.layui-footer span {
+	padding: 15%;
+	font-size: 30px;
+	font-weight: bold;
+}
+.layui-tab {
+	position: absolute;
+	margin: -20px 10px;
+	font-size: 40px;
+	font-weight: bold;
+	color: green;
+}
+.layui-footer span b {
+	position: absolute;
+    top: 20px;
+}
+.layui-tab-selected {
+	color: red;
+}
+.layui-form-item {
+	font-size: 60px;
+	margin-bottom: 40px;
+}
+.layui-form-label {
+	width: 20%;
+	font-size: 40px;
+	top: 20px;
+	line-height: normal;
+}
+.layui-input-block {
+	margin-left: 25%;
+}
+.layui-input {
+	height: 120px;
+}
+.layui-icon-date {
+	font-size: 40px;
+	top: 30%;
+	right: 5px;
+	position: absolute;
+}
+.layui-laydate .layui-laydate-content td, .layui-laydate .layui-laydate-content th {
+    width: 56px;
+    height: 50px;
+    padding: 13px;
+    text-align: center;
+}
+.layui-laydate .layui-laydate-main {
+    width: 100%;
+    font-size: 55px;
+}
+.layui-laydate .layui-laydate-header {
+    line-height: normal;
+}
+.layui-laydate .layui-laydate-header i.laydate-prev-y {
+    left: 15px;
+}
+.layui-laydate .layui-laydate-header i.laydate-prev-m {
+    left: 75px;
+}
+.layui-laydate .layui-laydate-header i.laydate-next-y {
+    right: 15px;
+}
+.layui-laydate .layui-laydate-header i.laydate-next-m {
+    right: 75px;
+}
+.layui-laydate .layui-laydate-header i {
+    top: 20px;
+    font-size: 40px;
+}
+
+.layui-form-radio * {
+    font-size: 40px;
+}
+.layui-form-radio>i {
+    font-size: 50px;
+}
+.layui-textarea {
+	line-height: normal;
+	height: 200px;
+}
+.layui-btn {
+    height: 120px;
+    line-height: normal;
+    padding: 0 60px;
+    font-size: 40px;
+}
+.layui-table-tool {
+	height: 100px;
+}
+.form-search {
+	font-size: 40px;
+}
+.form-search span {
+	font-size: 30px;
+}
+.form-search .layui-input{
+	height: 70px;
+	margin-top: 5px;
+}
+.form-search .layui-btn{
+	height: 70px;
+	padding: 0 20px;
+}
+.layui-form-select dl {
+	top: auto;
+	max-height: 500px;
+	width: 200px;
+    font-size: 50px;
+}
+.layui-form-select dl dd {
+	padding: 10px;
+}
+.layui-table tr {
+    height: 70px;
+}
+.layui-table td, .layui-table th {
+    font-size: 40px;
+}
+.layui-table-cell {
+    height: 70px;
+    line-height: 70px;
+    padding: 0 5px;
+}
+.layui-layer-dialog .layui-layer-content {
+	height: 120px;
+}
+.layui-layer-dialog .layui-layer-btn {
+	height: 80px;
+}
+.layui-layer-dialog .layui-layer-btn a {
+	height: 80px;
+	line-height: 80px;
+    font-size: 40px;
+    padding: 0 25px;
+}
+.layui-layer-dialog .layui-layer-title {
+	font-size: 30px;
+}
