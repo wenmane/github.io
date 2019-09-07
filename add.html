@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title>e帐清</title>
+	<link rel="icon" href="img/xyl_32.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="plugins/layui/css/layui.css">
+	<link rel="stylesheet" href="css/layout.css">
+</head>
+<body class="layui-layout-body">
+	<script src="plugins/layui/layui.js"></script>
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/jquery.mockjax.min.js"></script>
+	<script src="js/base.js"></script>
+<div class="layui-layout layui-layout-admin" id="layout_main">
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div class="layadmin-tabsbody-item layui-show">
+    	<div class="layui-card layadmin-header">
+    		<div class="layui-breadcrumb" style="visibility: visible;"></div>
+    	</div>
+    	<div class="layui-fluid">
+			<form class="layui-form" style="" action="javascript:;">
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"><b style="color:red;">*</b> 消费金额</label>
+			    <div class="layui-input-block">
+			      <input type="number" name="amount" placeholder="请输入消费金额" autocomplete="off" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"><b style="color:red;">*</b> 消费时间</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="date" placeholder="请选择日期" autocomplete="off" class="layui-input" readonly="readonly">
+			      <i class="layui-icon layui-icon-date" ></i>
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label"><b style="color:red;">*</b> 消费者</label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="type" value="1" title="闻先生">
+			      <input type="radio" name="type" value="2" title="陈女士">
+			      <input type="radio" name="type" value="3" title="小月亮">
+			      <input type="radio" name="type" value="4" title="生活品" checked>
+			      <input type="radio" name="type" value="5" title="其他">
+			    </div>
+			  </div>
+			  <div class="layui-form-item layui-form-text">
+			    <label class="layui-form-label">备注说明</label>
+			    <div class="layui-input-block">
+			      <textarea name="desc" placeholder="请输入备注说明" class="layui-textarea"></textarea>
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <p id="msg" style="font-size: 40px;margin-bottom: 20px;"></p>
+			      <button class="layui-btn" id="addbill">立 即 提 交</button>
+			      <button type="reset" id="restbill" class="layui-btn layui-btn-primary">重 置</button>
+			    </div>
+			  </div>
+			</form>
+			<script type="text/javascript">
+				var param=JSON.parse(localStorage.getItem('listparam'));
+				param.curpage='add';
+				localStorage.setItem('listparam',JSON.stringify(param))
+				layui.use(['layer', 'form', 'element','laydate'], function(){
+					var layer = layui.layer,form = layui.form,element=layui.element,laydate=layui.laydate;
+					//执行一个laydate实例
+					laydate.render({
+						elem: '[name="date"]' //指定元素 
+ 						,value:new Date()
+						,showBottom: false
+						,change: function(value, date, endDate){
+							$('[name="date"]').val(value);
+							$(".layui-laydate").remove();
+						}
+					});
+				});
+				$('#restbill').click(function(){
+					console.log(123);
+					$('#msg').html("");
+				});
+				$('#addbill').click(function(){
+					var amount=$('[name="amount"]').val();
+					var date=$('[name="date"]').val();
+					var type=$('[name="type"]:checked').val();
+					var desc=$('[name="desc"]').val();
+					if(amount==null||amount==''){
+						$('#msg').html("消费金额为必填项！").css('color','red');
+						return;
+					}
+					if(date==null||date==''){
+						$('#msg').html("消费日期为必填项！").css('color','red');
+						return;
+					}
+					if(type==null||type==''){
+						$('#msg').html("消费者为必填项！").css('color','red');
+						return;
+					}
+					$('#msg').html("添加成功！").css('color','green');
+					$('[name="amount"]').val("");
+					var newbill={date:date,type:type,amount:amount,desc:desc};
+					var billData=JSON.parse(localStorage.getItem('data'));
+					billData.data.push(newbill);
+					localStorage.setItem('data',JSON.stringify(billData));
+				});
+			</script>
+    	</div>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    <span data-name="index.html">
+    	<i class="layui-icon layui-icon-chart layui-tab"></i>
+    	<b>统计</b>
+    </span>
+    <span data-name="add.html">
+    	<i class="layui-icon layui-icon-add-1 layui-tab layui-tab-selected"></i>
+    	<b>新增</b>
+    </span>
+    <span data-name="list.html">
+    	<i class="layui-icon layui-icon-form layui-tab"></i>
+    	<b>记录</b>
+    </span>
+  </div>
+</div>
+</body>
+</html>
+	

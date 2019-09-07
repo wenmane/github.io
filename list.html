@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<title>e帐清</title>
+	<link rel="icon" href="img/xyl_32.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="plugins/layui/css/layui.css">
+	<link rel="stylesheet" href="css/layout.css">
+	<style type="text/css">
+		.layui-laydate .layui-laydate-main {
+	    	font-size: 40px;
+ 	    	height: 500px;
+		}
+		.layui-laydate .layui-laydate-list>li {
+		    line-height: normal;
+		    height: auto;
+		}
+		.layui-laydate .laydate-month-list>li {
+		    margin: 17px 20px;
+		}
+ 		.layui-laydate .laydate-footer-btns span {
+ 		    height: 70px;
+ 		    line-height: 70px;
+ 		    padding: 0 20px;
+ 		}
+ 		.layui-laydate .layui-laydate-footer span {
+ 			font-size: 40px;
+ 		}
+ 		.layui-laydate .layui-laydate-footer {
+    		height: 105px;
+    	}
+	</style>
+</head>
+<body class="layui-layout-body">
+	<script src="plugins/layui/layui.js"></script>
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/jquery.mockjax.min.js"></script>
+	<script src="js/base.js"></script>
+<div class="layui-layout layui-layout-admin" id="layout_main">
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div class="layadmin-tabsbody-item layui-show">
+    	<div class="layui-card layadmin-header">
+    		<div class="layui-breadcrumb" style="visibility: visible;"></div>
+    	</div>
+    	<div class="layui-fluid">
+    		<table id="customer" lay-filter="test"></table>
+    	</div>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    <span data-name="index.html">
+    	<i class="layui-icon layui-icon-chart layui-tab"></i>
+    	<b>统计</b>
+    </span>
+    <span data-name="add.html">
+    	<i class="layui-icon layui-icon-add-1 layui-tab"></i>
+    	<b>新增</b>
+    </span>
+    <span data-name="list.html">
+    	<i class="layui-icon layui-icon-form layui-tab layui-tab-selected"></i>
+    	<b>记录</b>
+    </span>
+  </div>
+</div>
+	
+	<script type="text/html" id="toolbarDemo">
+  		<div class="">
+			<div class="form-search">
+				<span>日期:</span>
+				<div class="layui-input-inline" style="width:240px;">
+  					<input type="text" readonly placeholder="选择日期" name="date" class="layui-input"/> 
+					<i class="layui-icon layui-icon-date" style="position: absolute;top:25px;right: 5px;"></i>
+				</div>
+				<span style="padding:0 0 0 10px;">消费者:</span>
+				<div class="layui-inline" style="width:170px;">
+					<select name="type">
+  						<option value="">全部</option>
+						<option value="1">闻先生</option>
+						<option value="2">陈女士</option>
+						<option value="3">小月亮</option>
+						<option value="4">生活品</option>
+						<option value="5">其它</option>
+					</select>
+				</div>
+				<span style="padding:0 0 0 10px;">
+					<button id="searchbill" class="layui-btn layui-btn-sm" lay-event="detail"><i class="layui-icon" style="font-size: 40px;">&#xe615;</i>查询</button>
+				</span>
+			</div>	
+  		</div>
+	</script>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-danger layui-btn-xs" style="height: 60px;padding: 0 20px;font-size: 40px;" lay-event="del">删除</a>
+	</script>
+	<script type="text/javascript">
+// 	localStorage.setItem('list',localStorage.getItem('data'));
+// 	var type1=$("[name='type']").val();
+// 	console.log(type1);
+	layui.use(['table','laydate','layer'], function(){
+		
+		var table = layui.table,laydate = layui.laydate,layer= layui.layer;
+		
+		//第一个实例
+		var c=table.render({
+		  id:'customer'
+		  ,elem: '#customer'
+		  ,title: 'customer'
+		  ,url: '/list/'+new Date().getTime() //数据接口
+		  ,page: false //开启分页
+		  ,limits:[10,20,50,100,200,500,1000,2000,5000]
+		  ,autoSort: true //前端自动排序
+		  ,toolbar: '#toolbarDemo'
+		  ,defaultToolbar:[]
+		  ,totalRow:true
+		  ,cols: [[ //表头
+			{field: '', title: '序号', fixed: 'left',width:'10%',align:'center',templet:function(d){return d.LAY_INDEX;}}
+		    ,{field: 'date',sort:true, title: '消费时间',width:'25%', align:'center'}
+		    ,{field: 'type', title: '消费者',width:'16%', align:'center',templet:function(d){return d.type==1?'闻先生':d.type==2?'陈女士':d.type==3?'小月亮':d.type==4?'生活品':'其它';}}
+		    ,{field: 'amount',totalRow:true,sort:true, title: '金额',width:'19%',align:'center'}
+		    ,{field: 'desc', title: '备注',width:'15%',align:'center'}
+		    ,{fixed: '', title: '操作', align:'center', toolbar: '#barDemo'}
+		  ]]
+		  ,response: {
+		    statusCode: 200 //规定成功的状态码，默认：0
+		  }
+		});
+		//由于table加载延时，setItem无效，重新读取一次数据
+		$(function () {
+			var param=JSON.parse(localStorage.getItem('listparam'));
+			if(param==null||param.curpage!='list'){
+				$('#searchbill').click();
+			}else{
+				var type=$("[name='type']").val(param.type);
+				var date=$("[name='date']").val(param.date);
+			}
+		});
+		
+		//监听头工具栏事件
+		table.on('toolbar(test)', function(obj){
+		  var checkStatus = table.checkStatus(obj.config.id)
+		  ,data = checkStatus.data; //获取选中的数据
+		  console.log("点击了");
+		  switch(obj.event){
+		    case 'detail':
+		      //刷新table数据
+ 	          refresh(obj);
+			  break;
+		  };
+		});
+		function refresh(obj){
+			var billData=JSON.parse(localStorage.getItem('data'));
+			var type=$("[name='type']").val();
+			var date=$("[name='date']").val();
+			var listparam={}
+			var tarr=[];
+			if(type!=null&&type!=''){
+				$.each(billData.data,function(index,value){
+					if(value.type==type){
+						tarr.push(value);
+					}
+				});
+				billData.data=tarr;
+				listparam.type=type;
+			}
+			var darr=[];
+			if(date!=null&&date!=''){
+				$.each(billData.data,function(index,value){
+					if(value.date.substr(0,7)==date){
+						darr.push(value);
+					}
+				});
+				billData.data=darr;
+				listparam.date=date;
+			}
+			localStorage.setItem('list',JSON.stringify(billData));
+			listparam.curpage="list";
+			localStorage.setItem('listparam',JSON.stringify(listparam));
+			//重载table数据
+ 			window.location.reload();
+		}
+		//监听行工具事件
+		table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+		  var tr=obj.data;
+		  switch(obj.event){
+		    case 'del':
+			  layer.confirm('<b style="font-size:40px;line-height:50px;">确认删除'+tr.date+'消费'+tr.amount+'的记录吗?</b>',{
+				area: ['500px', '300px']
+			  	,closeBtn:false
+			  }, function(index){
+				layer.close(index);//关闭提示框			
+				obj.del(); //删除对应行（tr）的DOM结构
+				var rmData=JSON.parse(localStorage.getItem('data'));
+		 		layer.msg('<span style="font-size: 60px;line-height:120px;">删除成功!</span>',{
+	 				area: '400px'
+	 			});
+		 		$.each(rmData.data,function(index,value){
+					if(value.date==tr.date&&value.type==tr.type&&value.amount==tr.amount&&value.desc==tr.desc){
+						rmData.data.splice(index,1);
+						localStorage.setItem('data',JSON.stringify(rmData));
+						$('#searchbill').click();
+						return;
+					}
+				});
+			  });
+		      break;
+		  };
+		});
+		//执行一个laydate实例
+		laydate.render({
+			elem: '[name="date"]' //指定元素 
+			,type:'month'
+			,value:new Date()
+			,showBottom: true
+			,change: function(value, date, endDate){
+				$('[name="date"]').val(value);
+				$(".layui-laydate").remove();
+			}
+		});
+		
+	});
+	
+	</script>
+</body>
+</html>
