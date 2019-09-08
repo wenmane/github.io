@@ -12,6 +12,7 @@
 	<script src="js/jquery-3.3.1.min.js"></script>
 	<script src="js/jquery.mockjax.min.js"></script>
 	<script src="js/base.js"></script>
+	<script src="js/echarts.min.js"></script>
 <div class="layui-layout layui-layout-admin" id="layout_main">
   <div class="layui-body">
     <!-- 内容主体区域 -->
@@ -20,7 +21,11 @@
     		<div class="layui-breadcrumb" style="visibility: visible;"></div>
     	</div>
     	<div class="layui-fluid">
-    		<h1>主页</h1>
+    		<div id="barcharts" style="height:500px;">
+    		</div>
+    		<div style="padding: 10px 0;border-top: 2px solid #C8C8C8;"></div>
+    		<div id="linecharts" style="height:500px;">
+    		</div>
     	</div>
     </div>
   </div>
@@ -42,13 +47,145 @@
   </div>
 </div>
 <script type="text/javascript">
-	var param=JSON.parse(localStorage.getItem('listparam'));
-	param.curpage='index';
-	localStorage.setItem('listparam',JSON.stringify(param))
-	layui.use(['layer', 'form', 'element','laydate'], function(){
-		var layer = layui.layer,form = layui.form,element=layui.element,laydate=layui.laydate;
-		
+	var chartsData=JSON.parse(localStorage.getItem('data'));
+	var twoData=[0,0,0,0,0];	//定义上上月的数据
+	var oneData=[0,0,0,0,0];	//定义上月的数据
+	var curData=[0,0,0,0,0];	//定义本月的数据
+	var date = new Date();
+	var year = date.getFullYear();
+    var month = date.getMonth()+1;
+	var curYM=year+"-"+(month<10?'0'+month:month);	//获取当前月(含年)
+	var oneYM=(month<=1?year-1:year)+"-"+(month<=1?12:(month-1<10?'0'+(month-1):month-1))	//获取上个月(含年)
+	var twoYM=(month<=2?year-1:year)+"-"+(month<=2?1+month:(month-2<10?'0'+(month-2):month-2))	//获取上上月(含年)
+	console.log(curYM+">>"+oneYM+">>"+twoYM);
+	$.each(chartsData.data,function(index,value){
+		var d=value.date.substr(0,7);
+		if(d==curYM){
+			curData[value.type-1]+=value.amount;
+			
+		}else if(d==oneYM){
+			oneData[value.type-1]+=value.amount;
+		}else if(d==twoYM){
+			twoData[value.type-1]+=value.amount;
+		}
+		console.log(curData);
 	});
+	// 基于准备好的dom，初始化echarts实例
+    var barChart = echarts.init(document.getElementById('barcharts'));
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+        	show: true
+            ,text: '本月消费统计'
+            ,textStyle: {
+            	fontSize: 30
+            }
+        },
+        tooltip: {
+        	textStyle: {
+            	fontSize: 25
+            }
+        },
+        legend: {
+            data:['消费额']
+	        ,textStyle: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        	,selectedMode: false
+        },
+        xAxis: {
+            data: ['闻先生','陈女士','小月亮','生活品','交通']
+	        ,axisLabel: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        },
+        yAxis: {
+        	axisLabel: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        },
+        series: [{
+            name: '消费额',
+            type: 'bar',
+            data: curData
+        }]
+    };
+ 	// 使用刚指定的配置项和数据显示图表。
+    barChart.setOption(option);
+    var lineChart = echarts.init(document.getElementById('linecharts'));
+    // 指定图表的配置项和数据
+    var loption = {
+        title: {
+        	show: true
+            ,text: '近2月环比增长率'
+            ,textStyle: {
+            	fontSize: 30
+            }
+        },
+        tooltip: {
+        	textStyle: {
+            	fontSize: 25
+            }
+        	,trigger: 'axis'
+        	,formatter: function (params, ticket, callback) {
+        		var rate="100%";
+        		if(params[0].value!=0){
+        			rate=((params[1].value-params[0].value)/params[0].value*100).toFixed(2)+"%";
+        		}
+        		var color=rate.substr(0,1)=="-"?"#009900":"red";    		
+        		return "<p>"+params[0].axisValue+
+        			"</p><p>"+params[0].marker+params[0].seriesName+": "+params[0].value+
+        			"</p><p>"+params[1].marker+params[1].seriesName+": "+params[1].value+
+        			"</p><p>环比率: <span style='color:"+color+";'>"+rate+"</span></p>";
+        	}
+        },
+        legend: {
+            data:[twoYM,oneYM]
+	        ,textStyle: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        	,selectedMode: false
+        	,itemGap: 40
+        },
+        xAxis: {
+            data: ['闻先生','陈女士','小月亮','生活品','交通']
+	        ,axisLabel: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        },
+        yAxis: {
+        	axisLabel: {
+	        	fontSize: 20
+	        	,fontWeight: 'bold'
+	        }
+        },
+        series: [{
+            name: twoYM
+            ,type: 'line'
+            ,lineStyle: {
+            	width: 3
+            }
+            ,data: twoData
+            ,symbol: 'emptyCircle'
+            ,symbolSize: 4
+        },{
+            name: oneYM
+            ,type: 'line'
+            ,lineStyle: {
+            	width: 3
+            }
+            ,data: oneData
+            ,symbol: 'emptyCircle'
+            ,symbolSize: 4
+        }]
+    };
+ 	// 使用刚指定的配置项和数据显示图表。
+    lineChart.setOption(loption);
 </script>
 </body>
 </html>

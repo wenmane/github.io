@@ -41,7 +41,7 @@
 			      <input type="radio" name="type" value="2" title="陈女士">
 			      <input type="radio" name="type" value="3" title="小月亮">
 			      <input type="radio" name="type" value="4" title="生活品" checked>
-			      <input type="radio" name="type" value="5" title="其他">
+			      <input type="radio" name="type" value="5" title="交通">
 			    </div>
 			  </div>
 			  <div class="layui-form-item layui-form-text">
@@ -59,9 +59,7 @@
 			  </div>
 			</form>
 			<script type="text/javascript">
-				var param=JSON.parse(localStorage.getItem('listparam'));
-				param.curpage='add';
-				localStorage.setItem('listparam',JSON.stringify(param))
+				
 				layui.use(['layer', 'form', 'element','laydate'], function(){
 					var layer = layui.layer,form = layui.form,element=layui.element,laydate=layui.laydate;
 					//执行一个laydate实例
@@ -76,11 +74,10 @@
 					});
 				});
 				$('#restbill').click(function(){
-					console.log(123);
 					$('#msg').html("");
 				});
 				$('#addbill').click(function(){
-					var amount=$('[name="amount"]').val();
+					var amount=parseFloat($('[name="amount"]').val());
 					var date=$('[name="date"]').val();
 					var type=$('[name="type"]:checked').val();
 					var desc=$('[name="desc"]').val();
@@ -102,6 +99,11 @@
 					var billData=JSON.parse(localStorage.getItem('data'));
 					billData.data.push(newbill);
 					localStorage.setItem('data',JSON.stringify(billData));
+					var param=JSON.parse(localStorage.getItem('listparam'));
+					if(param!=null&&param.curpage!='add'){
+						param.curpage='add';
+						localStorage.setItem('listparam',JSON.stringify(param))
+					}
 				});
 			</script>
     	</div>

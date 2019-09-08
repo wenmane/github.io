@@ -82,7 +82,7 @@
 						<option value="2">陈女士</option>
 						<option value="3">小月亮</option>
 						<option value="4">生活品</option>
-						<option value="5">其它</option>
+						<option value="5">交通</option>
 					</select>
 				</div>
 				<span style="padding:0 0 0 10px;">
@@ -117,7 +117,7 @@
 		  ,cols: [[ //表头
 			{field: '', title: '序号', fixed: 'left',width:'10%',align:'center',templet:function(d){return d.LAY_INDEX;}}
 		    ,{field: 'date',sort:true, title: '消费时间',width:'25%', align:'center'}
-		    ,{field: 'type', title: '消费者',width:'16%', align:'center',templet:function(d){return d.type==1?'闻先生':d.type==2?'陈女士':d.type==3?'小月亮':d.type==4?'生活品':'其它';}}
+		    ,{field: 'type', title: '消费者',width:'16%', align:'center',templet:function(d){return d.type==1?'闻先生':d.type==2?'陈女士':d.type==3?'小月亮':d.type==4?'生活品':'交通';}}
 		    ,{field: 'amount',totalRow:true,sort:true, title: '金额',width:'19%',align:'center'}
 		    ,{field: 'desc', title: '备注',width:'15%',align:'center'}
 		    ,{fixed: '', title: '操作', align:'center', toolbar: '#barDemo'}
@@ -141,7 +141,6 @@
 		table.on('toolbar(test)', function(obj){
 		  var checkStatus = table.checkStatus(obj.config.id)
 		  ,data = checkStatus.data; //获取选中的数据
-		  console.log("点击了");
 		  switch(obj.event){
 		    case 'detail':
 		      //刷新table数据
