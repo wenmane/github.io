@@ -78,10 +78,11 @@
 				});
 				$('#addbill').click(function(){
 					var amount=parseFloat($('[name="amount"]').val());
+					console.log(amount);
 					var date=$('[name="date"]').val();
 					var type=$('[name="type"]:checked').val();
 					var desc=$('[name="desc"]').val();
-					if(amount==null||amount==''){
+					if(isNaN(amount)){
 						$('#msg').html("消费金额为必填项！").css('color','red');
 						return;
 					}
