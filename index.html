@@ -48,8 +48,8 @@
 </div>
 <script type="text/javascript">
 	var chartsData=JSON.parse(localStorage.getItem('data'));
-	var twoData=[0,0,0,0,0];	//定义上上月的数据
-	var oneData=[0,0,0,0,0];	//定义上月的数据
+	var twoData=[0,0,0,0,0,0];	//定义上上月的数据
+	var oneData=[0,0,0,0,0,0];	//定义上月的数据
 	var curData=[0,0,0,0,0];	//定义本月的数据
 	var date = new Date();
 	var year = date.getFullYear();
@@ -57,7 +57,6 @@
 	var curYM=year+"-"+(month<10?'0'+month:month);	//获取当前月(含年)
 	var oneYM=(month<=1?year-1:year)+"-"+(month<=1?12:(month-1<10?'0'+(month-1):month-1))	//获取上个月(含年)
 	var twoYM=(month<=2?year-1:year)+"-"+(month<=2?1+month:(month-2<10?'0'+(month-2):month-2))	//获取上上月(含年)
-	console.log(curYM+">>"+oneYM+">>"+twoYM);
 	$.each(chartsData.data,function(index,value){
 		var d=value.date.substr(0,7);
 		if(d==curYM){
@@ -68,8 +67,9 @@
 		}else if(d==twoYM){
 			twoData[value.type-1]+=value.amount;
 		}
-		console.log(curData);
 	});
+	oneData[5]=oneData[0]+oneData[1]+oneData[2]+oneData[3]+oneData[4];
+	twoData[5]=twoData[0]+twoData[1]+twoData[2]+twoData[3]+twoData[4];
 	// 基于准备好的dom，初始化echarts实例
     var barChart = echarts.init(document.getElementById('barcharts'));
     // 指定图表的配置项和数据
@@ -152,7 +152,7 @@
         	,itemGap: 40
         },
         xAxis: {
-            data: ['闻先生','陈女士','小月亮','生活品','交通']
+            data: ['闻先生','陈女士','小月亮','生活品','交通','总消费']
 	        ,axisLabel: {
 	        	fontSize: 20
 	        	,fontWeight: 'bold'
