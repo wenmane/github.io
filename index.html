@@ -32,18 +32,24 @@
   
   <div class="layui-footer">
     <!-- 底部固定区域 -->
+    <a href="index.html">
     <span data-name="index.html">
     	<i class="layui-icon layui-icon-chart layui-tab layui-tab-selected"></i>
     	<b>统计</b>
     </span>
+    </a>
+    <a href="add.html">
     <span data-name="add.html">
     	<i class="layui-icon layui-icon-add-1 layui-tab"></i>
     	<b>新增</b>
     </span>
+    </a>
+    <a href="list.html">
     <span data-name="list.html">
     	<i class="layui-icon layui-icon-form layui-tab"></i>
     	<b>记录</b>
     </span>
+    </a>
   </div>
 </div>
 <script type="text/javascript">
@@ -61,15 +67,20 @@
 		var d=value.date.substr(0,7);
 		if(d==curYM){
 			curData[value.type-1]+=value.amount;
-			
 		}else if(d==oneYM){
 			oneData[value.type-1]+=value.amount;
 		}else if(d==twoYM){
 			twoData[value.type-1]+=value.amount;
 		}
 	});
+	curData=[curData[0].toFixed(2),curData[1].toFixed(2),curData[2].toFixed(2)
+			,curData[3].toFixed(2),curData[4].toFixed(2)];
 	oneData[5]=oneData[0]+oneData[1]+oneData[2]+oneData[3]+oneData[4];
+	oneData=[oneData[0].toFixed(2),oneData[1].toFixed(2),oneData[2].toFixed(2)
+			,oneData[3].toFixed(2),oneData[4].toFixed(2),oneData[5].toFixed(2)];
 	twoData[5]=twoData[0]+twoData[1]+twoData[2]+twoData[3]+twoData[4];
+	twoData=[twoData[0].toFixed(2),twoData[1].toFixed(2),twoData[2].toFixed(2)
+		,twoData[3].toFixed(2),twoData[4].toFixed(2),twoData[5].toFixed(2)];
 	// 基于准备好的dom，初始化echarts实例
     var barChart = echarts.init(document.getElementById('barcharts'));
     // 指定图表的配置项和数据
@@ -132,7 +143,9 @@
         	,trigger: 'axis'
         	,formatter: function (params, ticket, callback) {
         		var rate="100%";
-        		if(params[0].value!=0){
+        		if(params[0].value==0&&params[1].value==0){
+        			rate="0%";
+        		}else if(params[0].value!=0){
         			rate=((params[1].value-params[0].value)/params[0].value*100).toFixed(2)+"%";
         		}
         		var color=rate.substr(0,1)=="-"?"#009900":"red";    		
@@ -186,6 +199,7 @@
     };
  	// 使用刚指定的配置项和数据显示图表。
     lineChart.setOption(loption);
+    layui.use(['element'], function(){});
 </script>
 </body>
 </html>
